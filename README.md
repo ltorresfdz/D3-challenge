@@ -19,5 +19,5 @@ Second, the bonus part, where you find the intereactive chart for each of the de
 
 In order to run both, Started Code version and Bonus version, it is necessary to use python -m http.server to run the visualization. This will host the page at localhost:8000 in your web browser.
 
-Or you could click on this link to visit each version:
+
 
