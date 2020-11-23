@@ -62,7 +62,7 @@ d3.csv("assets/data/data.csv").then(function(healthData) {
 
       var yAxis = chartGroup.append("g")
       .call(yAxis);
-
+    // Create axes labels
       chartGroup.append("text")
       .attr("transform", `translate(${width - 40},${height - 5})`)
       .attr("class", "axis-text-main")
@@ -99,14 +99,10 @@ d3.csv("assets/data/data.csv").then(function(healthData) {
 		.text(d => d.abbr)
 
 
-
-
-
-
-
-    // Create axes labels
-
-    var xLabelsGroup = chartGroup.append('g')
+ // Create axes labels
+ //=============================================
+ //create all the x  axes options
+  var xLabelsGroup = chartGroup.append('g')
 		.attr('transform', `translate(${width / 2}, ${height + 20})`);
   
   var povertyLabel = xLabelsGroup.append('text')
@@ -123,14 +119,15 @@ d3.csv("assets/data/data.csv").then(function(healthData) {
 	    .classed('aText inactive', true)
 	    .text('Age (Median)');
 
-    var incomeLabel = xLabelsGroup.append('text')
+  var incomeLabel = xLabelsGroup.append('text')
 	    .attr('x', 0)
 	    .attr('y', 60)
 	    .attr('value', 'income')
 	    .classed('aText inactive', true)
 	    .text('Household Income (Median)');
 
-    var yLabelsGroup = chartGroup.append('g')
+  //create all the y  axes options
+  var yLabelsGroup = chartGroup.append('g')
 
 	var HealthLabel = yLabelsGroup.append('text')
 	    .attr("transform", `translate(-40,${height / 2})rotate(-90)`)
@@ -139,41 +136,42 @@ d3.csv("assets/data/data.csv").then(function(healthData) {
 	    .text('Lacks Healthcare (%)');
 
 	var smokesLabel = yLabelsGroup.append('text')
-		.attr("transform", `translate(-60,${height / 2})rotate(-90)`)
+		  .attr("transform", `translate(-60,${height / 2})rotate(-90)`)
 	    .attr('value', 'smokes')
 	    .classed('aText inactive', true)
 	    .text('Smokes (%)');
 
-    var obesityLabel = yLabelsGroup.append('text')
-		.attr("transform", `translate(-80,${height / 2})rotate(-90)`)
+  var obesityLabel = yLabelsGroup.append('text')
+		  .attr("transform", `translate(-80,${height / 2})rotate(-90)`)
 	    .attr('value', 'obesity')
 	    .classed('aText inactive', true)
 	    .text('Obesse (%)');
 
-      
+    // with these variables calls the function to update the information 
+    // shown on the tooltip.  
+    var stateCircles = updateToolTip(chosenYAxis,chosenXAxis,stateCircles,stateText);
+    var stateText = updateToolTip(chosenYAxis,chosenXAxis,stateCircles,stateText);
 
-
-      var stateCircles = updateToolTip(chosenYAxis,chosenXAxis,stateCircles,stateText),
-      stateText = updateToolTip(chosenYAxis,chosenXAxis,stateCircles,stateText);
-
-      xLabelsGroup.selectAll('text')
-	    .on('click', function() {
-		    var value = d3.select(this).attr('value');
+    //create an event listeners for each  x axis, then get a scale for the selected x axis data
+    //=======================================================================================================  
+    xLabelsGroup.selectAll('text').on('click', function() { 
+		    var value = d3.select(this).attr('value');//select the text value that was clicked
 		    if (value !== chosenXAxis) {
 			    chosenXAxis = value;
+          //calls the getXScaleFor Axis functions that will generate the scale for the x axis
+          xScale = getXScaleForAxis(healthData, chosenXAxis);
 
-		        xScale = getXScaleForAxis(healthData, chosenXAxis);
-
-		        xAxis.transition()
+          //the x axis created on step 3, line 52, added transition attribute, https://bl.ocks.org/d3noob/1ea51d03775b9650e8dfd03474e202fe
+          xAxis.transition()
 				    .duration(1000)
 				    .ease(d3.easeBack)
-					.call(d3.axisBottom(xScale));
-
-		        stateCircles.transition()
-			        .duration(1000)
-			        .ease(d3.easeBack)
-			        .on('start',function(){
-			        	d3.select(this)
+					  .call(d3.axisBottom(xScale));
+          //added transition attribute, ease, on, start,  reference: https://github.com/d3/d3-transition 
+		      stateCircles.transition()
+			      .duration(1000)
+			      .ease(d3.easeBack)
+			      .on('start',function(){
+			            d3.select(this)
 			        		.attr("opacity", 0.50)
 			        		.attr('r',15);
 			        })
@@ -189,9 +187,13 @@ d3.csv("assets/data/data.csv").then(function(healthData) {
 			    	.ease(d3.easeBack)
 			    	.attr('x', d => xScale(d[chosenXAxis]));
 
-	        	stateCircles = updateToolTip(chosenYAxis,chosenXAxis,stateCircles,stateText),
+    //calls function to update the information to display on the tooltip depending 
+    //on the information selected on the x  axis.
+            
+        stateCircles = updateToolTip(chosenYAxis,chosenXAxis,stateCircles,stateText),
 				stateText = updateToolTip(chosenYAxis,chosenXAxis,stateCircles,stateText);
-
+    
+     //setting to active axis the selected data, and inactive the other options   
 		        if (chosenXAxis === 'poverty') {
 				    povertyLabel
 			            .classed('active', true)
@@ -229,19 +231,18 @@ d3.csv("assets/data/data.csv").then(function(healthData) {
       });
       
 
-      
+    // Everything that was done for the X axis, is repeated for the y axis:  
     yLabelsGroup.selectAll('text')
     .on('click', function() {
       var value = d3.select(this).attr('value');
       if (value !== chosenYAxis) {
         chosenYAxis = value;
-
-          yScale = getYScaleForAxis(healthData, chosenYAxis);
+        yScale = getYScaleForAxis(healthData, chosenYAxis);
 
           yAxis.transition()
           .duration(1000)
           .ease(d3.easeBack)
-        .call(d3.axisLeft(yScale));
+          .call(d3.axisLeft(yScale));
 
           stateCircles.transition()
             .duration(1000)
@@ -263,17 +264,17 @@ d3.csv("assets/data/data.csv").then(function(healthData) {
           .ease(d3.easeBack)
           .attr('y', d => yScale(d[chosenYAxis]));
 
-          stateCircles = updateToolTip(chosenYAxis,chosenXAxis,stateCircles,stateText),
+      stateCircles = updateToolTip(chosenYAxis,chosenXAxis,stateCircles,stateText),
       stateText = updateToolTip(chosenYAxis,chosenXAxis,stateCircles,stateText);
 
           if (chosenYAxis === 'healthcare') {
           HealthLabel
                 .classed('active', true)
                 .classed('inactive', false);
-            smokesLabel
+          smokesLabel
                 .classed('active', false)
                 .classed('inactive', true);
-              obesityLabel
+          obesityLabel
                 .classed('active', false)
                 .classed('inactive', true);
           }
@@ -284,7 +285,7 @@ d3.csv("assets/data/data.csv").then(function(healthData) {
             smokesLabel
                 .classed('active', false)
                 .classed('inactive', true);
-              obesityLabel
+            obesityLabel
                 .classed('active', true)
                 .classed('inactive', false);
           }
@@ -295,12 +296,14 @@ d3.csv("assets/data/data.csv").then(function(healthData) {
             smokesLabel
                 .classed('active', true)
                 .classed('inactive', false);
-              obesityLabel
+            obesityLabel
                 .classed('active', false)
                 .classed('inactive', true);
           }
       }
     });
+
+
 
     function getXScaleForAxis(datos,chosenXAxis) {
       var xScale = d3.scaleLinear()
@@ -320,7 +323,11 @@ d3.csv("assets/data/data.csv").then(function(healthData) {
         return yScale;
     }
     
+    //This function updates the information to display on the tooltip depending 
+    //on the information selected on the x  axis.
     function updateToolTip(chosenYAxis,chosenXAxis,stateCircles,stateText) {
+     
+    //Initialize tool tip
       var toolTip = d3.tip()
           .attr("class","d3-tip")
           .offset([80, -60])
@@ -335,8 +342,9 @@ d3.csv("assets/data/data.csv").then(function(healthData) {
               return (`${d.state}<br>${chosenYAxis}:${d[chosenYAxis]}% 
                     <br>${chosenXAxis}:${d[chosenXAxis]}`)
         });
-  
+   // Create tooltip in the chart
     stateCircles.call(toolTip);
+   // Create event listeners to display and hide the tooltip
     stateCircles.on('mouseover', toolTip.show).on('mouseout', toolTip.hide);
   
     d3.selectAll('.stateText').call(toolTip);
@@ -346,35 +354,10 @@ d3.csv("assets/data/data.csv").then(function(healthData) {
     return stateText;
   }  
 
-    // Step 6: Initialize tool tip
-    // ==============================
-    // var toolTip = d3.tip()
-    //   .attr("class", "tooltip")
-    //   .offset([80, -60])
-    //   .html(function(d) {
-    //     return (`${d.rockband}<br>Hair length: ${d.hair_length}<br>Hits: ${d.num_hits}`);
-    //   });
-
-    // Step 7: Create tooltip in the chart
-    // ==============================
-    // chartGroup.call(toolTip);
-
-    // Step 8: Create event listeners to display and hide the tooltip
-    // ==============================
-    // circlesGroup.on("click", function(data) {
-    //   toolTip.show(data, this);
-    // })
-      // onmouseout event
-    //   .on("mouseout", function(data, index) {
-    //     toolTip.hide(data);
-    //   });
-
-
-
   }).catch(function(error) {
     console.log(error);
   });
 
 
-// Select the x scale, y scale and tool tip information
+
 

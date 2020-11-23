@@ -60,7 +60,7 @@ d3.csv("assets/data/data.csv").then(function(healthData) {
 
     // Step 5: Create Circles
     // ==============================
-    chartGroup.selectAll("circle")  // aqui borre  var = circlesgroup
+    chartGroup.selectAll("circle")  
     .data(healthData)
     .enter()
     .append("circle")
@@ -82,29 +82,6 @@ d3.csv("assets/data/data.csv").then(function(healthData) {
         .text(d => d.abbr);
 
 
-    // Step 6: Initialize tool tip
-    // ==============================
-    // var toolTip = d3.tip()
-    //   .attr("class", "tooltip")
-    //   .offset([80, -60])
-    //   .html(function(d) {
-    //     return (`${d.rockband}<br>Hair length: ${d.hair_length}<br>Hits: ${d.num_hits}`);
-    //   });
-
-    // Step 7: Create tooltip in the chart
-    // ==============================
-    // chartGroup.call(toolTip);
-
-    // Step 8: Create event listeners to display and hide the tooltip
-    // ==============================
-    // circlesGroup.on("click", function(data) {
-    //   toolTip.show(data, this);
-    // })
-      // onmouseout event
-    //   .on("mouseout", function(data, index) {
-    //     toolTip.hide(data);
-    //   });
-
     // Create axes labels
 
     chartGroup.append("text")
@@ -116,7 +93,6 @@ d3.csv("assets/data/data.csv").then(function(healthData) {
       .attr("transform", "rotate(-90)")
       .attr("y", 0 - margin.left + 50)
       .attr("x", 0 - (height / 2)-60)
-    //   .attr("dy", "1em")
       .attr("class", "axisText")
       .text("Lacks Healthcare (%)");
 
