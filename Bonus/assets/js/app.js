@@ -145,7 +145,7 @@ d3.csv("assets/data/data.csv").then(function(healthData) {
 		  .attr("transform", `translate(-80,${height / 2})rotate(-90)`)
 	    .attr('value', 'obesity')
 	    .classed('aText inactive', true)
-	    .text('Obesse (%)');
+	    .text('Obese (%)');
 
     // with these variables calls the function to update the information 
     // shown on the tooltip.  
