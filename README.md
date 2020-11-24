@@ -17,7 +17,9 @@ First, in the StarterCode folder, please find the code for the chart that shows 
 Second, the bonus part, where you find the intereactive chart for each of the demographics and behavioral risk factors:  
 ![alt text](https://github.com/ltorresfdz/D3-challenge/blob/main/Bonus/Capture.JPG "print screen bonus part")
 
-In order to run both, Started Code version and Bonus version, it is necessary to use python -m http.server to run the visualization. This will host the page at localhost:8000 in your web browser.
+In order to run both, Started Code version and Bonus version, first you would need to clone or download files from the green button in the top right corner of the github repo.
+
+It is necessary to use python -m http.server to run the visualization. This will host the page at localhost:8000 in your web browser.
 
 
 
